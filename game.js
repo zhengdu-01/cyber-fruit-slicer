@@ -10,57 +10,28 @@ class CyberFruitGame {
         this.particles = [];
         this.trail = [];
         this.score = 0;
-        this.lives = 3;
         this.combo = 0;
         this.gameRunning = false;
         this.lastFruitTime = 0;
         this.fruitSpawnInterval = 1500;
         this.mouseDown = false;
         this.lastMousePos = { x: 0, y: 0 };
+        this.gameTime = 60;
+        this.gameStartTime = 0;
         
         this.neonColors = ['#ff00ff', '#00ffff', '#00ff00', '#ffff00'];
         
         this.fruitTypes = [
-            { name: 'apple', points: 10, image: null },
-            { name: 'pineapple', points: 15, image: null },
-            { name: 'strawberry', points: 20, image: null },
-            { name: 'kiwi', points: 10, image: null },
-            { name: 'orange', points: 10, image: null },
-            { name: 'watermelon', points: 25, image: null }
+            { name: 'apple', emoji: '🍎', points: 10 },
+            { name: 'pineapple', emoji: '🍍', points: 15 },
+            { name: 'strawberry', emoji: '🍓', points: 20 },
+            { name: 'kiwi', emoji: '🥝', points: 10 },
+            { name: 'orange', emoji: '🍊', points: 10 },
+            { name: 'watermelon', emoji: '🍉', points: 25 }
         ];
-        
-        this.imagesLoaded = 0;
-        this.loadImages();
         
         this.setupEventListeners();
         this.gameLoop();
-    }
-    
-    loadImages() {
-        const imageUrls = [
-            { type: 'apple', url: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=futuristic%20cyberpunk%20metal%20apple%20with%20neon%20lights%20pink%20blue%20green%20glow%20dark%20background&image_size=square' },
-            { type: 'pineapple', url: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=futuristic%20cyberpunk%20metal%20pineapple%20with%20neon%20lights%20pink%20blue%20green%20glow%20dark%20background&image_size=square' },
-            { type: 'strawberry', url: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=futuristic%20cyberpunk%20metal%20strawberry%20with%20neon%20lights%20pink%20blue%20green%20glow%20dark%20background&image_size=square' },
-            { type: 'kiwi', url: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=futuristic%20cyberpunk%20metal%20kiwi%20with%20neon%20lights%20pink%20blue%20green%20glow%20dark%20background&image_size=square' },
-            { type: 'orange', url: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=futuristic%20cyberpunk%20metal%20orange%20with%20neon%20lights%20pink%20blue%20green%20glow%20dark%20background&image_size=square' },
-            { type: 'watermelon', url: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=futuristic%20cyberpunk%20metal%20watermelon%20with%20neon%20lights%20pink%20blue%20green%20glow%20dark%20background&image_size=square' }
-        ];
-        
-        imageUrls.forEach(item => {
-            const img = new Image();
-            img.crossOrigin = 'anonymous';
-            img.onload = () => {
-                this.imagesLoaded++;
-                const fruitType = this.fruitTypes.find(f => f.name === item.type);
-                if (fruitType) {
-                    fruitType.image = img;
-                }
-            };
-            img.onerror = () => {
-                this.imagesLoaded++;
-            };
-            img.src = item.url;
-        });
     }
     
     resize() {
@@ -194,12 +165,11 @@ class CyberFruitGame {
             vy: -3 + Math.random() * 3,
             rotation: (Math.random() - 0.5) * 0.4,
             currentRotation: 0,
-            image: fruit.image,
+            emoji: fruit.emoji,
             alpha: 1,
             decay: 0.015,
             side: slicePos.x > fruit.x ? 'left' : 'right',
-            size: fruit.size * 0.55,
-            originalSize: fruit.size
+            size: fruit.size * 0.55
         });
         
         this.slices.push({
@@ -209,12 +179,11 @@ class CyberFruitGame {
             vy: -3 + Math.random() * 3,
             rotation: (Math.random() - 0.5) * 0.4,
             currentRotation: 0,
-            image: fruit.image,
+            emoji: fruit.emoji,
             alpha: 1,
             decay: 0.015,
             side: slicePos.x > fruit.x ? 'right' : 'left',
-            size: fruit.size * 0.55,
-            originalSize: fruit.size
+            size: fruit.size * 0.55
         });
     }
     
@@ -239,13 +208,14 @@ class CyberFruitGame {
         this.particles = [];
         this.trail = [];
         this.score = 0;
-        this.lives = 3;
         this.combo = 0;
+        this.gameTime = 60;
         this.gameRunning = true;
         this.lastFruitTime = Date.now();
+        this.gameStartTime = Date.now();
         
         this.updateScore();
-        this.updateLives();
+        this.updateTime();
         
         document.getElementById('startMenu').style.display = 'none';
         document.getElementById('gameOverMenu').style.display = 'none';
@@ -261,18 +231,14 @@ class CyberFruitGame {
         document.getElementById('score').textContent = this.score;
     }
     
-    updateLives() {
-        document.getElementById('lives').textContent = this.lives;
+    updateTime() {
+        document.getElementById('time').textContent = Math.ceil(this.gameTime);
     }
     
     spawnFruit() {
         const now = Date.now();
         if (now - this.lastFruitTime > this.fruitSpawnInterval) {
-            const availableFruits = this.fruitTypes.filter(f => f.image);
-            const fruitType = availableFruits.length > 0 
-                ? availableFruits[Math.floor(Math.random() * availableFruits.length)]
-                : this.fruitTypes[Math.floor(Math.random() * this.fruitTypes.length)];
-            
+            const fruitType = this.fruitTypes[Math.floor(Math.random() * this.fruitTypes.length)];
             const size = Math.random() * 30 + 50;
             const x = Math.random() * (this.canvas.width - size * 2) + size;
             
@@ -282,14 +248,14 @@ class CyberFruitGame {
                 vx: (Math.random() - 0.5) * 4,
                 vy: -14 - Math.random() * 4,
                 size: size,
-                image: fruitType.image,
+                emoji: fruitType.emoji,
                 points: fruitType.points,
                 rotation: 0,
                 rotationSpeed: (Math.random() - 0.5) * 0.15
             });
             
             this.lastFruitTime = now;
-            this.fruitSpawnInterval = Math.max(700, 1500 - this.score / 120);
+            this.fruitSpawnInterval = Math.max(600, 1500 - this.score / 150);
         }
     }
     
@@ -300,18 +266,10 @@ class CyberFruitGame {
             fruit.y += fruit.vy;
             fruit.rotation += fruit.rotationSpeed;
             
-            if (fruit.y > this.canvas.height + fruit.size) {
-                this.lives--;
-                this.updateLives();
+            if (fruit.y > this.canvas.height + fruit.size || 
+                fruit.x < -fruit.size || 
+                fruit.x > this.canvas.width + fruit.size) {
                 this.combo = 0;
-                
-                if (this.lives <= 0) {
-                    this.gameOver();
-                }
-                return false;
-            }
-            
-            if (fruit.x < -fruit.size || fruit.x > this.canvas.width + fruit.size) {
                 return false;
             }
             
@@ -351,6 +309,17 @@ class CyberFruitGame {
             point.alpha -= 0.04;
             return point.alpha > 0;
         });
+    }
+    
+    updateGameTime() {
+        if (!this.gameRunning) return;
+        const elapsed = (Date.now() - this.gameStartTime) / 1000;
+        this.gameTime = Math.max(0, 60 - elapsed);
+        this.updateTime();
+        
+        if (this.gameTime <= 0) {
+            this.gameOver();
+        }
     }
     
     draw() {
@@ -414,18 +383,13 @@ class CyberFruitGame {
         this.ctx.translate(fruit.x, fruit.y);
         this.ctx.rotate(fruit.rotation);
         
-        if (fruit.image) {
-            this.ctx.shadowColor = '#00ffff';
-            this.ctx.shadowBlur = 20;
-            this.ctx.drawImage(fruit.image, -fruit.size / 2, -fruit.size / 2, fruit.size, fruit.size);
-        } else {
-            this.ctx.shadowColor = '#00ffff';
-            this.ctx.shadowBlur = 15;
-            this.ctx.fillStyle = '#ff00ff';
-            this.ctx.beginPath();
-            this.ctx.arc(0, 0, fruit.size / 2, 0, Math.PI * 2);
-            this.ctx.fill();
-        }
+        this.ctx.shadowColor = '#00ffff';
+        this.ctx.shadowBlur = 20;
+        
+        this.ctx.font = `${fruit.size}px Arial`;
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+        this.ctx.fillText(fruit.emoji, 0, 0);
         
         this.ctx.shadowBlur = 0;
         this.ctx.restore();
@@ -437,26 +401,13 @@ class CyberFruitGame {
         this.ctx.rotate(slice.currentRotation);
         this.ctx.globalAlpha = slice.alpha;
         
-        if (slice.image) {
-            this.ctx.shadowColor = '#ff00ff';
-            this.ctx.shadowBlur = 15;
-            
-            const offsetX = slice.side === 'left' ? -slice.size / 2 : 0;
-            this.ctx.drawImage(
-                slice.image,
-                offsetX,
-                -slice.size / 2,
-                slice.size,
-                slice.size
-            );
-        } else {
-            this.ctx.shadowColor = '#ff00ff';
-            this.ctx.shadowBlur = 10;
-            this.ctx.fillStyle = '#ff00ff';
-            this.ctx.beginPath();
-            this.ctx.arc(0, 0, slice.size / 2, 0, Math.PI * 2);
-            this.ctx.fill();
-        }
+        this.ctx.shadowColor = '#ff00ff';
+        this.ctx.shadowBlur = 15;
+        
+        this.ctx.font = `${slice.size}px Arial`;
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+        this.ctx.fillText(slice.emoji, 0, 0);
         
         this.ctx.shadowBlur = 0;
         this.ctx.globalAlpha = 1;
@@ -488,6 +439,7 @@ class CyberFruitGame {
     
     gameLoop() {
         if (this.gameRunning) {
+            this.updateGameTime();
             this.spawnFruit();
             this.updateFruits();
             this.updateSlices();
