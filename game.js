@@ -18,20 +18,48 @@ class CyberFruitGame {
         this.lastMousePos = { x: 0, y: 0 };
         this.gameTime = 60;
         this.gameStartTime = 0;
+        this.imagesLoaded = 0;
+        this.totalImages = 6;
         
         this.neonColors = ['#ff00ff', '#00ffff', '#00ff00', '#ffff00'];
         
         this.fruitTypes = [
-            { name: 'apple', emoji: '🍎', points: 10 },
-            { name: 'pineapple', emoji: '🍍', points: 15 },
-            { name: 'strawberry', emoji: '🍓', points: 20 },
-            { name: 'kiwi', emoji: '🥝', points: 10 },
-            { name: 'orange', emoji: '🍊', points: 10 },
-            { name: 'watermelon', emoji: '🍉', points: 25 }
+            { name: 'apple', image: null, points: 10 },
+            { name: 'pineapple', image: null, points: 15 },
+            { name: 'strawberry', image: null, points: 20 },
+            { name: 'kiwi', image: null, points: 10 },
+            { name: 'orange', image: null, points: 10 },
+            { name: 'watermelon', image: null, points: 25 }
         ];
         
+        this.fruitPrompts = [
+            'cyberpunk mechanical apple with neon pink and blue lights metal texture futuristic 3d render',
+            'cyberpunk mechanical pineapple with neon lights metal armor futuristic 3d render',
+            'cyberpunk mechanical strawberry with neon green and red lights metallic texture futuristic 3d render',
+            'cyberpunk mechanical kiwi with neon blue and pink lights metal plating futuristic 3d render',
+            'cyberpunk mechanical orange with neon green and cyan lights metal shell futuristic 3d render',
+            'cyberpunk mechanical watermelon with neon pink and cyan lights metal plating futuristic 3d render'
+        ];
+        
+        this.loadImages();
         this.setupEventListeners();
         this.gameLoop();
+    }
+    
+    loadImages() {
+        this.fruitTypes.forEach((fruitType, index) => {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => {
+                this.imagesLoaded++;
+            };
+            img.onerror = () => {
+                this.imagesLoaded++;
+            };
+            const prompt = encodeURIComponent(this.fruitPrompts[index]);
+            img.src = `https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=${prompt}&image_size=square_hd`;
+            fruitType.image = img;
+        });
     }
     
     resize() {
@@ -165,7 +193,7 @@ class CyberFruitGame {
             vy: -3 + Math.random() * 3,
             rotation: (Math.random() - 0.5) * 0.4,
             currentRotation: 0,
-            emoji: fruit.emoji,
+            image: fruit.image,
             alpha: 1,
             decay: 0.015,
             side: slicePos.x > fruit.x ? 'left' : 'right',
@@ -179,7 +207,7 @@ class CyberFruitGame {
             vy: -3 + Math.random() * 3,
             rotation: (Math.random() - 0.5) * 0.4,
             currentRotation: 0,
-            emoji: fruit.emoji,
+            image: fruit.image,
             alpha: 1,
             decay: 0.015,
             side: slicePos.x > fruit.x ? 'right' : 'left',
@@ -248,7 +276,7 @@ class CyberFruitGame {
                 vx: (Math.random() - 0.5) * 4,
                 vy: -14 - Math.random() * 4,
                 size: size,
-                emoji: fruitType.emoji,
+                image: fruitType.image,
                 points: fruitType.points,
                 rotation: 0,
                 rotationSpeed: (Math.random() - 0.5) * 0.15
@@ -386,10 +414,21 @@ class CyberFruitGame {
         this.ctx.shadowColor = '#00ffff';
         this.ctx.shadowBlur = 20;
         
-        this.ctx.font = `${fruit.size}px Arial`;
-        this.ctx.textAlign = 'center';
-        this.ctx.textBaseline = 'middle';
-        this.ctx.fillText(fruit.emoji, 0, 0);
+        if (fruit.image && fruit.image.complete) {
+            const halfSize = fruit.size / 2;
+            this.ctx.drawImage(
+                fruit.image, 
+                -halfSize, 
+                -halfSize, 
+                fruit.size, 
+                fruit.size
+            );
+        } else {
+            this.ctx.font = `${fruit.size}px Arial`;
+            this.ctx.textAlign = 'center';
+            this.ctx.textBaseline = 'middle';
+            this.ctx.fillText('🍎', 0, 0);
+        }
         
         this.ctx.shadowBlur = 0;
         this.ctx.restore();
@@ -404,10 +443,21 @@ class CyberFruitGame {
         this.ctx.shadowColor = '#ff00ff';
         this.ctx.shadowBlur = 15;
         
-        this.ctx.font = `${slice.size}px Arial`;
-        this.ctx.textAlign = 'center';
-        this.ctx.textBaseline = 'middle';
-        this.ctx.fillText(slice.emoji, 0, 0);
+        if (slice.image && slice.image.complete) {
+            const halfSize = slice.size / 2;
+            this.ctx.drawImage(
+                slice.image, 
+                -halfSize, 
+                -halfSize, 
+                slice.size, 
+                slice.size
+            );
+        } else {
+            this.ctx.font = `${slice.size}px Arial`;
+            this.ctx.textAlign = 'center';
+            this.ctx.textBaseline = 'middle';
+            this.ctx.fillText('🍎', 0, 0);
+        }
         
         this.ctx.shadowBlur = 0;
         this.ctx.globalAlpha = 1;
