@@ -24,12 +24,12 @@ class CyberFruitGame {
         this.neonColors = ['#ff00ff', '#00ffff', '#00ff00', '#ffff00'];
         
         this.fruitUrls = {
-            apple: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=cyberpunk%20apple%20chrome%20metal%20texture%20neon%20pink%20blue%20green%20LED%20glowing%20futuristic%20robotic%20dark%20background',
-            pineapple: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=cyberpunk%20pineapple%20chrome%20metal%20cyan%20blue%20circles%20pink%20neon%20futuristic%20mechanical',
-            strawberry: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=cyberpunk%20strawberry%20chrome%20metal%20green%20neon%20red%20LED%20robotic%20dark%20background',
-            kiwi: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=cyberpunk%20kiwi%20chrome%20metal%20neon%20pink%20blue%20green%20dots%20futuristic',
-            orange: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=cyberpunk%20orange%20chrome%20metal%20green%20neon%20cross%20blue%20glowing%20robotic',
-            watermelon: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=cyberpunk%20watermelon%20chrome%20metal%20neon%20pink%20blue%20green%20LED%20curved%20mechanical'
+            apple: 'https://i.postimg.cc/mDnSN52f/jimeng-2026-05-23-7465-zhi-zuo-sai-bo-peng-ke-ji-xie-shui-guo-su-cai-jiang-jin-se-zhi-gan-gai-wei-yin-se-zhi-gan-bao-chi-sai-bo-peng-ke-feng-ge-jin-shu-zhi-gan-he.png',
+            pineapple: 'https://i.postimg.cc/qR61YT5Q/jimeng-2026-05-23-3268-zhi-zuo-sai-bo-peng-ke-ji-xie-shui-guo-su-cai-jiang-jin-se-zhi-gan-gai-wei-yin-se-zhi-gan-bao-chi-sai-bo-peng-ke-feng-ge-jin-shu-zhi-gan-he-0.png',
+            strawberry: 'https://i.postimg.cc/QtKfP3yn/jimeng-2026-05-23-8502-zhi-zuo-sai-bo-peng-ke-ji-xie-shui-guo-su-cai-jiang-jin-se-zhi-gan-gai-wei-yin-se-zhi-gan-bao-chi-sai-bo-peng-ke-feng-ge-jin-shu-zhi-gan-he-0.png',
+            kiwi: 'https://i.postimg.cc/d1Z5XYfv/jimeng-2026-05-23-8990-zhi-zuo-sai-bo-peng-ke-ji-xie-shui-guo-su-cai-jiang-jin-se-zhi-gan-gai-wei-yin-se-zhi-gan-bao-chi-sai-bo-peng-ke-feng-ge-jin-shu-zhi-gan-he-0.png',
+            orange: 'https://i.postimg.cc/Kz30V2Hw/jimeng-2026-05-23-9819-zhi-zuo-sai-bo-peng-ke-ji-xie-shui-guo-su-cai-jiang-jin-se-zhi-gan-gai-wei-yin-se-zhi-gan-bao-chi-sai-bo-peng-ke-feng-ge-jin-shu-zhi-gan-he-0.png',
+            watermelon: 'https://i.postimg.cc/RV4T1K48/jimeng-2026-05-23-2411-zhi-zuo-sai-bo-peng-ke-ji-xie-shui-guo-su-cai-jiang-jin-se-zhi-gan-gai-wei-yin-se-zhi-gan-bao-chi-sai-bo-peng-ke-feng-ge-jin-shu-zhi-gan-he.png'
         };
         
         this.fruitTypes = [
@@ -423,7 +423,6 @@ class CyberFruitGame {
         this.ctx.shadowColor = '#00ffff';
         this.ctx.shadowBlur = 20;
         
-        // Check if image is valid and loaded successfully
         const imageValid = fruit.image && fruit.image.complete && 
                           fruit.image.naturalWidth !== 0 && 
                           fruit.imageLoaded !== false;
@@ -457,7 +456,6 @@ class CyberFruitGame {
         this.ctx.shadowColor = '#ff00ff';
         this.ctx.shadowBlur = 15;
         
-        // Check if image is valid and loaded successfully
         const imageValid = slice.image && slice.image.complete && 
                           slice.image.naturalWidth !== 0 && 
                           slice.imageLoaded !== false;
