@@ -423,12 +423,17 @@ class CyberFruitGame {
         this.ctx.shadowColor = '#00ffff';
         this.ctx.shadowBlur = 20;
         
+        const halfSize = fruit.size / 2;
+        
+        this.ctx.beginPath();
+        this.ctx.arc(0, 0, halfSize, 0, Math.PI * 2);
+        this.ctx.clip();
+        
         const imageValid = fruit.image && fruit.image.complete && 
                           fruit.image.naturalWidth !== 0 && 
                           fruit.imageLoaded !== false;
         
         if (imageValid) {
-            const halfSize = fruit.size / 2;
             this.ctx.drawImage(
                 fruit.image, 
                 -halfSize, 
@@ -443,7 +448,6 @@ class CyberFruitGame {
             this.ctx.fillText(fruit.emoji || '🍎', 0, 0);
         }
         
-        this.ctx.shadowBlur = 0;
         this.ctx.restore();
     }
     
@@ -456,12 +460,17 @@ class CyberFruitGame {
         this.ctx.shadowColor = '#ff00ff';
         this.ctx.shadowBlur = 15;
         
+        const halfSize = slice.size / 2;
+        
+        this.ctx.beginPath();
+        this.ctx.arc(0, 0, halfSize, 0, Math.PI * 2);
+        this.ctx.clip();
+        
         const imageValid = slice.image && slice.image.complete && 
                           slice.image.naturalWidth !== 0 && 
                           slice.imageLoaded !== false;
         
         if (imageValid) {
-            const halfSize = slice.size / 2;
             this.ctx.drawImage(
                 slice.image, 
                 -halfSize, 
@@ -476,8 +485,6 @@ class CyberFruitGame {
             this.ctx.fillText(slice.emoji || '🍎', 0, 0);
         }
         
-        this.ctx.shadowBlur = 0;
-        this.ctx.globalAlpha = 1;
         this.ctx.restore();
     }
     
