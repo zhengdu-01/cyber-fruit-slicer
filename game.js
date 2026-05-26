@@ -281,8 +281,8 @@ class CyberFruitGame {
             this.fruits.push({
                 x: x,
                 y: this.canvas.height + size,
-                vx: (Math.random() - 0.5) * 4,
-                vy: -14 - Math.random() * 4,
+                vx: (Math.random() - 0.5) * 3,
+                vy: -22 - Math.random() * 8,
                 size: size,
                 emoji: fruitType.emoji,
                 image: fruitType.image,
@@ -299,7 +299,7 @@ class CyberFruitGame {
     
     updateFruits() {
         this.fruits = this.fruits.filter(fruit => {
-            fruit.vy += 0.55;
+            fruit.vy += 0.35;
             fruit.x += fruit.vx;
             fruit.y += fruit.vy;
             fruit.rotation += fruit.rotationSpeed;
