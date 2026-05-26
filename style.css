@@ -26,8 +26,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    /* 背景图备用方案 */
-    background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #0a0a0f 100%);
+    background: url('https://neeko-copilot.bytedance.net/api/text_to_image?prompt=cyberpunk%20city%20night%20scene%20neon%20lights%20pink%20blue%20futuristic%20buildings%20rain%20reflections%20dark%20atmospheric%20blade%20runner%20style%20hologram%20advertisements&image_size=landscape_16_9') center/cover no-repeat;
     background-color: #0a0a0f;
 }
 

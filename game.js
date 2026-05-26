@@ -33,12 +33,12 @@ class CyberFruitGame {
         ];
         
         this.fruitPrompts = [
-            'cyberpunk mechanical apple with neon pink and blue lights metal texture futuristic 3d render',
-            'cyberpunk mechanical pineapple with neon lights metal armor futuristic 3d render',
-            'cyberpunk mechanical strawberry with neon green and red lights metallic texture futuristic 3d render',
-            'cyberpunk mechanical kiwi with neon blue and pink lights metal plating futuristic 3d render',
-            'cyberpunk mechanical orange with neon green and cyan lights metal shell futuristic 3d render',
-            'cyberpunk mechanical watermelon with neon pink and cyan lights metal plating futuristic 3d render'
+            'cyberpunk apple chrome metal texture with neon pink blue green LED strips glowing lights futuristic robotic mechanical parts rivets dark background 3d render',
+            'cyberpunk pineapple chrome metal armor with cyan blue circles and pink neon lines glowing lights futuristic mechanical 3d render',
+            'cyberpunk strawberry chrome metal with green neon dots and red LED strips futuristic robotic mechanical dark background 3d render',
+            'cyberpunk kiwi chrome metal with neon pink and blue rings green glowing dots futuristic mechanical 3d render',
+            'cyberpunk orange chrome metal with green neon cross lines and blue glowing edges futuristic robotic mechanical 3d render',
+            'cyberpunk watermelon chrome metal with neon pink blue green curved LED strips futuristic mechanical rivets dark background 3d render'
         ];
         
         this.loadImages();
@@ -57,9 +57,10 @@ class CyberFruitGame {
             img.onerror = () => {
                 this.imagesLoaded++;
                 fruitType.imageLoaded = false;
+                console.log(`Failed to load ${fruitType.name} image, will use emoji fallback`);
             };
             const prompt = encodeURIComponent(this.fruitPrompts[index]);
-            img.src = `https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=${prompt}&image_size=square_hd`;
+            img.src = `https://neeko-copilot.bytedance.net/api/text_to_image?prompt=${prompt}&image_size=square_hd`;
             fruitType.image = img;
             fruitType.imageLoaded = false;
         });
