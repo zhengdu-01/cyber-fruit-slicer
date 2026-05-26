@@ -24,12 +24,12 @@ class CyberFruitGame {
         this.neonColors = ['#ff00ff', '#00ffff', '#00ff00', '#ffff00'];
         
         this.fruitTypes = [
-            { name: 'apple', image: null, points: 10 },
-            { name: 'pineapple', image: null, points: 15 },
-            { name: 'strawberry', image: null, points: 20 },
-            { name: 'kiwi', image: null, points: 10 },
-            { name: 'orange', image: null, points: 10 },
-            { name: 'watermelon', image: null, points: 25 }
+            { name: 'apple', emoji: '🍎', image: null, points: 10 },
+            { name: 'pineapple', emoji: '🍍', image: null, points: 15 },
+            { name: 'strawberry', emoji: '🍓', image: null, points: 20 },
+            { name: 'kiwi', emoji: '🥝', image: null, points: 10 },
+            { name: 'orange', emoji: '🍊', image: null, points: 10 },
+            { name: 'watermelon', emoji: '🍉', image: null, points: 25 }
         ];
         
         this.fruitPrompts = [
@@ -52,13 +52,16 @@ class CyberFruitGame {
             img.crossOrigin = 'anonymous';
             img.onload = () => {
                 this.imagesLoaded++;
+                fruitType.imageLoaded = true;
             };
             img.onerror = () => {
                 this.imagesLoaded++;
+                fruitType.imageLoaded = false;
             };
             const prompt = encodeURIComponent(this.fruitPrompts[index]);
             img.src = `https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=${prompt}&image_size=square_hd`;
             fruitType.image = img;
+            fruitType.imageLoaded = false;
         });
     }
     
@@ -193,7 +196,9 @@ class CyberFruitGame {
             vy: -3 + Math.random() * 3,
             rotation: (Math.random() - 0.5) * 0.4,
             currentRotation: 0,
+            emoji: fruit.emoji,
             image: fruit.image,
+            imageLoaded: fruit.imageLoaded,
             alpha: 1,
             decay: 0.015,
             side: slicePos.x > fruit.x ? 'left' : 'right',
@@ -207,7 +212,9 @@ class CyberFruitGame {
             vy: -3 + Math.random() * 3,
             rotation: (Math.random() - 0.5) * 0.4,
             currentRotation: 0,
+            emoji: fruit.emoji,
             image: fruit.image,
+            imageLoaded: fruit.imageLoaded,
             alpha: 1,
             decay: 0.015,
             side: slicePos.x > fruit.x ? 'right' : 'left',
@@ -276,7 +283,9 @@ class CyberFruitGame {
                 vx: (Math.random() - 0.5) * 4,
                 vy: -14 - Math.random() * 4,
                 size: size,
+                emoji: fruitType.emoji,
                 image: fruitType.image,
+                imageLoaded: fruitType.imageLoaded,
                 points: fruitType.points,
                 rotation: 0,
                 rotationSpeed: (Math.random() - 0.5) * 0.15
@@ -414,7 +423,12 @@ class CyberFruitGame {
         this.ctx.shadowColor = '#00ffff';
         this.ctx.shadowBlur = 20;
         
-        if (fruit.image && fruit.image.complete) {
+        // Check if image is valid and loaded successfully
+        const imageValid = fruit.image && fruit.image.complete && 
+                          fruit.image.naturalWidth !== 0 && 
+                          fruit.imageLoaded !== false;
+        
+        if (imageValid) {
             const halfSize = fruit.size / 2;
             this.ctx.drawImage(
                 fruit.image, 
@@ -427,7 +441,7 @@ class CyberFruitGame {
             this.ctx.font = `${fruit.size}px Arial`;
             this.ctx.textAlign = 'center';
             this.ctx.textBaseline = 'middle';
-            this.ctx.fillText('🍎', 0, 0);
+            this.ctx.fillText(fruit.emoji || '🍎', 0, 0);
         }
         
         this.ctx.shadowBlur = 0;
@@ -443,7 +457,12 @@ class CyberFruitGame {
         this.ctx.shadowColor = '#ff00ff';
         this.ctx.shadowBlur = 15;
         
-        if (slice.image && slice.image.complete) {
+        // Check if image is valid and loaded successfully
+        const imageValid = slice.image && slice.image.complete && 
+                          slice.image.naturalWidth !== 0 && 
+                          slice.imageLoaded !== false;
+        
+        if (imageValid) {
             const halfSize = slice.size / 2;
             this.ctx.drawImage(
                 slice.image, 
@@ -456,7 +475,7 @@ class CyberFruitGame {
             this.ctx.font = `${slice.size}px Arial`;
             this.ctx.textAlign = 'center';
             this.ctx.textBaseline = 'middle';
-            this.ctx.fillText('🍎', 0, 0);
+            this.ctx.fillText(slice.emoji || '🍎', 0, 0);
         }
         
         this.ctx.shadowBlur = 0;
