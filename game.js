@@ -33,12 +33,12 @@ class CyberFruitGame {
         };
         
         this.fruitTypes = [
-            { name: 'apple', emoji: '🍎', image: null, points: 10 },
-            { name: 'pineapple', emoji: '🍍', image: null, points: 15 },
-            { name: 'strawberry', emoji: '🍓', image: null, points: 20 },
-            { name: 'kiwi', emoji: '🥝', image: null, points: 10 },
-            { name: 'orange', emoji: '🍊', image: null, points: 10 },
-            { name: 'watermelon', emoji: '🍉', image: null, points: 25 }
+            { name: 'apple', emoji: '🍎', image: null, points: 10, processedImage: null },
+            { name: 'pineapple', emoji: '🍍', image: null, points: 15, processedImage: null },
+            { name: 'strawberry', emoji: '🍓', image: null, points: 20, processedImage: null },
+            { name: 'kiwi', emoji: '🥝', image: null, points: 10, processedImage: null },
+            { name: 'orange', emoji: '🍊', image: null, points: 10, processedImage: null },
+            { name: 'watermelon', emoji: '🍉', image: null, points: 25, processedImage: null }
         ];
         
         this.loadImages();
@@ -51,6 +51,7 @@ class CyberFruitGame {
             const img = new Image();
             img.crossOrigin = 'anonymous';
             img.onload = () => {
+                fruitType.processedImage = this.removeBlackBackground(img);
                 this.imagesLoaded++;
                 fruitType.imageLoaded = true;
             };
@@ -63,6 +64,35 @@ class CyberFruitGame {
             fruitType.image = img;
             fruitType.imageLoaded = false;
         });
+    }
+    
+    removeBlackBackground(img) {
+        const tempCanvas = document.createElement('canvas');
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCanvas.width = img.width;
+        tempCanvas.height = img.height;
+        
+        tempCtx.drawImage(img, 0, 0);
+        
+        const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+        const data = imageData.data;
+        
+        for (let i = 0; i < data.length; i += 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+            
+            if (r < 40 && g < 40 && b < 40) {
+                data[i + 3] = 0;
+            }
+        }
+        
+        tempCtx.putImageData(imageData, 0, 0);
+        
+        const resultImg = new Image();
+        resultImg.src = tempCanvas.toDataURL();
+        
+        return resultImg;
     }
     
     resize() {
@@ -197,7 +227,7 @@ class CyberFruitGame {
             rotation: (Math.random() - 0.5) * 0.4,
             currentRotation: 0,
             emoji: fruit.emoji,
-            image: fruit.image,
+            image: fruit.processedImage || fruit.image,
             imageLoaded: fruit.imageLoaded,
             alpha: 1,
             decay: 0.015,
@@ -213,7 +243,7 @@ class CyberFruitGame {
             rotation: (Math.random() - 0.5) * 0.4,
             currentRotation: 0,
             emoji: fruit.emoji,
-            image: fruit.image,
+            image: fruit.processedImage || fruit.image,
             imageLoaded: fruit.imageLoaded,
             alpha: 1,
             decay: 0.015,
@@ -274,7 +304,7 @@ class CyberFruitGame {
         const now = Date.now();
         if (now - this.lastFruitTime > this.fruitSpawnInterval) {
             const fruitType = this.fruitTypes[Math.floor(Math.random() * this.fruitTypes.length)];
-            const size = Math.random() * 30 + 50;
+            const size = Math.random() * 40 + 70;
             const x = Math.random() * (this.canvas.width - size * 2) + size;
             
             this.fruits.push({
@@ -284,7 +314,7 @@ class CyberFruitGame {
                 vy: -22 - Math.random() * 8,
                 size: size,
                 emoji: fruitType.emoji,
-                image: fruitType.image,
+                image: fruitType.processedImage || fruitType.image,
                 imageLoaded: fruitType.imageLoaded,
                 points: fruitType.points,
                 rotation: 0,
