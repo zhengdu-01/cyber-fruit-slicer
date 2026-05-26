@@ -23,6 +23,15 @@ class CyberFruitGame {
         
         this.neonColors = ['#ff00ff', '#00ffff', '#00ff00', '#ffff00'];
         
+        this.fruitUrls = {
+            apple: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=cyberpunk%20apple%20chrome%20metal%20texture%20neon%20pink%20blue%20green%20LED%20glowing%20futuristic%20robotic%20dark%20background',
+            pineapple: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=cyberpunk%20pineapple%20chrome%20metal%20cyan%20blue%20circles%20pink%20neon%20futuristic%20mechanical',
+            strawberry: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=cyberpunk%20strawberry%20chrome%20metal%20green%20neon%20red%20LED%20robotic%20dark%20background',
+            kiwi: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=cyberpunk%20kiwi%20chrome%20metal%20neon%20pink%20blue%20green%20dots%20futuristic',
+            orange: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=cyberpunk%20orange%20chrome%20metal%20green%20neon%20cross%20blue%20glowing%20robotic',
+            watermelon: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=cyberpunk%20watermelon%20chrome%20metal%20neon%20pink%20blue%20green%20LED%20curved%20mechanical'
+        };
+        
         this.fruitTypes = [
             { name: 'apple', emoji: '🍎', image: null, points: 10 },
             { name: 'pineapple', emoji: '🍍', image: null, points: 15 },
@@ -32,22 +41,13 @@ class CyberFruitGame {
             { name: 'watermelon', emoji: '🍉', image: null, points: 25 }
         ];
         
-        this.fruitPrompts = [
-            'cyberpunk apple chrome metal texture with neon pink blue green LED strips glowing lights futuristic robotic mechanical parts rivets dark background 3d render',
-            'cyberpunk pineapple chrome metal armor with cyan blue circles and pink neon lines glowing lights futuristic mechanical 3d render',
-            'cyberpunk strawberry chrome metal with green neon dots and red LED strips futuristic robotic mechanical dark background 3d render',
-            'cyberpunk kiwi chrome metal with neon pink and blue rings green glowing dots futuristic mechanical 3d render',
-            'cyberpunk orange chrome metal with green neon cross lines and blue glowing edges futuristic robotic mechanical 3d render',
-            'cyberpunk watermelon chrome metal with neon pink blue green curved LED strips futuristic mechanical rivets dark background 3d render'
-        ];
-        
         this.loadImages();
         this.setupEventListeners();
         this.gameLoop();
     }
     
     loadImages() {
-        this.fruitTypes.forEach((fruitType, index) => {
+        this.fruitTypes.forEach((fruitType) => {
             const img = new Image();
             img.crossOrigin = 'anonymous';
             img.onload = () => {
@@ -59,8 +59,7 @@ class CyberFruitGame {
                 fruitType.imageLoaded = false;
                 console.log(`Failed to load ${fruitType.name} image, will use emoji fallback`);
             };
-            const prompt = encodeURIComponent(this.fruitPrompts[index]);
-            img.src = `https://neeko-copilot.bytedance.net/api/text_to_image?prompt=${prompt}&image_size=square_hd`;
+            img.src = this.fruitUrls[fruitType.name];
             fruitType.image = img;
             fruitType.imageLoaded = false;
         });
